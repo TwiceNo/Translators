@@ -1,0 +1,17 @@
+w1 i1
+w4 i2 r1 i3
+w7 i4 r2 n1 r3
+w6 i5
+w5 i6 r1 i7
+i2 o12 n2
+i3 o12 n1
+w15 w16 r2 i3 o8 i2 r3
+i4 r5 i2 r6 o12 i2 o5 n3
+i2 o12 i2 o1 n4
+w3 w15
+i5 o12 c1
+w13 r2 i5 o10 c2 r3 w17 r2 o3 r1 o3 r3 i5
+i6 o12 n5 o2 n3
+i7 o12 n6 o3 n7 o1 r2 n8 o3 n9 o4 n1 r3
+w17 r2 o3 r1 o3 r3 i6 o4 i7
+w3 w1 i1
