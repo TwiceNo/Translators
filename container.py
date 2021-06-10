@@ -5,11 +5,13 @@ class Container:
     def add(self, value):
         self.content.append(value)
 
-    def items(self, identifier=None, content=None):
+    def items(self, identifier=None, content=None, priority=None):
         if identifier:
             return [value for value in self.content if value.identifier == identifier]
         elif content:
             return [value for value in self.content if value.content == content]
+        elif priority:
+            return [value for value in self.content if value.priority == priority]
         else:
             return [value for value in self.content]
 

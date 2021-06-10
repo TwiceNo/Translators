@@ -48,7 +48,7 @@ class Notation:
                         self.stack.pop()
                         self.stack.append("КП")
                         procedure_level -= 1
-                    elif token.content in ["PROGRAM", "DO"]:
+                    elif token.content == "PROGRAM":
                         self.stack.pop()
                         procedure_level += 1
                         procedure_number += 1
@@ -119,7 +119,7 @@ class Notation:
                         self.stack.pop()
                         self.stack.append("КП")
                         procedure_level -= 1
-                    elif token.content in ["PROGRAM", "DO"]:
+                    elif token.content == "PROGRAM":
                         procedure_level += 1
                         procedure_number += 1
                         self.stack.append(f"{procedure_level} {procedure_number} НП")
@@ -140,14 +140,25 @@ def exception(error_code):
         raise Exception("Syntax Error")
 
 
-if __name__ == '__main__':
+def main():
     code, lexemes = stage_1()
+    # for line in code:
+    #     print(*list(map(str, line)))
+    # print(*[str(x) for line in code for x in line], sep="\n")
     end_of_line = lexemes.get_lexeme("\\n")
     formatted_code = [end_of_line]
     for line in code:
-        # translator = Notation([end_of_line] + line + [end_of_line], lexemes)
         formatted_code += line + [end_of_line]
     translator = Notation(formatted_code, lexemes)
-    print(list(map(str, translator.polish_notation())))
+    # print(" ".join(list(map(str, translator.polish_notation()))))
+    return translator.polish_notation(), lexemes
+    # for i in range(9):
+    #     items = lexemes.items(priority=str(i))
+    #     for item in items:
+    #         print(item.priority, item.content, str(item), sep="\t")
+    #
+    #
 
-    # print([str(x) for x in translator.polish_notation()])
+
+if __name__ == '__main__':
+    main()

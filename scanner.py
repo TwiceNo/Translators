@@ -10,8 +10,8 @@ class Scanner:
         code = code.split("\n")
         machine_code = []
         for line in code:
-            if line and line[0] != "C":
-                machine_code.append(self.translate(line.strip()))
+            # if line and line[0] != "C":
+            machine_code.append(self.translate(line.strip()))
         return machine_code
 
     def translate(self, line):
