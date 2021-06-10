@@ -15,7 +15,11 @@ def build_lexemes(letter, container, lexemes=None):
         lexemes = open(f"source_lexemes\\{letter}").read().split("\n")
     for i in range(len(lexemes)):
         if lexemes[i] not in container.values():
-            container.add(Lexeme(letter, container.count(letter) + 1, lexemes[i]))
+            if " " in lexemes[i]:
+                lexemes[i] = lexemes[i].split()
+            else:
+                lexemes[i] = [lexemes[i]]
+            container.add(Lexeme(letter, container.count(letter) + 1, *lexemes[i]))
 
 def write_table(letter, lexemes):
     file = open(f"tables\\{letter}_table", "w")
@@ -38,8 +42,10 @@ def write_code(code):
 def main():
     scanner = Scanner(read_lexemes())
     code = scanner.scan(open("file").read())
-    form_tables(scanner.lexemes)
-    write_code(code)
+    # form_tables(scanner.lexemes)
+    # write_code(code)
+    return code, scanner.lexemes
+    # print(*[[item.priority for item in line] for line in code], sep="\n")
 
 
 if __name__ == '__main__':

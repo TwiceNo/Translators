@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/../IPIS/.idea/IPIS.iml" filepath="$PROJECT_DIR$/../IPIS/.idea/IPIS.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../semestral/.idea/semestral.iml" filepath="$PROJECT_DIR$/../semestral/.idea/semestral.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/translators.iml" filepath="$PROJECT_DIR$/.idea/translators.iml" />
+    </modules>
+  </component>
+</project>

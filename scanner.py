@@ -110,7 +110,7 @@ class Scanner:
 
     def translate_lexeme(self, lexeme, identity=None):
         self.add_lexeme(lexeme, identity)
-        return self.lexemes.get_identifier(lexeme)
+        return self.lexemes.get_lexeme(lexeme)
 
     def add_lexeme(self, lexeme, identity=None):
         if lexeme and lexeme not in self.lexemes.values():

@@ -22,5 +22,8 @@ class Container:
     def get_identifier(self, content):
         return str(*self.items(content=content))
 
+    def get_lexeme(self, content):
+        return self.items(content=content)[0]
+
     def get_content(self, identifier):
         return [value.content for value in self.content if str(value) == identifier][0]
