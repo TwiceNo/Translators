@@ -1,10 +1,14 @@
 from stage1 import main as stage_1
 
-def exception(code):
+def exception(code, token):
     if code == 0:
-        raise Exception("Syntax Error")
+        raise Exception(f"Syntax Error near '{token}'")
     elif code == 1:
-        raise Warning("Program should start with PROGRAM")
+        raise Exception(f"Unbalanced Brackets near '{token}'")
+    elif code == 2:
+        raise Exception(f"Can't perform operation near '{token}'")
+    elif code == 3:
+        raise Exception(f"'{token}' is not atomic")
 
 
 class Syntax:
@@ -15,24 +19,24 @@ class Syntax:
 
     def scan(self):
         if self.index >= len(self.code):
-            exception(0)
+            exception(0, self.symbol)
         self.index += 1
         self.symbol = self.code[self.index]
 
     def analysis(self):
         self.scan()
         if self.symbol.content != "PROGRAM":
-            exception(0)
+            exception(0, self.symbol)
         self.scan()
         if self.symbol.identifier != "i":
-            exception(0)
+            exception(0, self.symbol)
         self.scan()
         if self.symbol.content != "\\n":
-            exception(0)
+            exception(0, self.symbol)
         self.scan()
         self.text()
         if self.symbol.content != "END":
-            exception(0)
+            exception(0, self.symbol)
         return True
 
     def text(self):
@@ -51,14 +55,14 @@ class Syntax:
     def decl(self):
         self.scan()
         if self.symbol.identifier != "i":
-            exception(0)
+            exception(0, self.symbol)
         self.scan()
         if self.symbol.content != "\\n":
             while self.symbol.content != "\\n":
                 if self.symbol.content == ",":
                     self.scan()
                     if self.symbol.identifier != "i":
-                        exception(0)
+                        exception(0, self.symbol)
                 self.scan()
             self.scan()
         else:
@@ -68,18 +72,18 @@ class Syntax:
         if self.symbol.content == "GOTO":
             self.scan()
             if self.symbol.identifier != "i":
-                exception(0)
+                exception(0, self.symbol)
             self.scan()
             if self.symbol.content != "\\n":
-                exception(0)
+                exception(0, self.symbol)
             self.scan()
         elif self.symbol.content == "CALL":
             self.scan()
             if self.symbol.identifier != "i":
-                exception(0)
+                exception(0, self.symbol)
             self.scan()
             if self.symbol.content != "(":
-                exception(0)
+                exception(0, self.symbol)
             self.scan()
             while self.symbol.content != ")":
                 self.operand()
@@ -91,23 +95,23 @@ class Syntax:
                     self.scan()
             self.scan()
             if self.symbol.content != "\\n":
-                exception(0)
+                exception(0, self.symbol)
         elif self.symbol.content == "IF":
             self.conditional_operator()
         elif self.symbol.content == "DO":
             self.cycle()
         else:
             if self.symbol.identifier != "i":
-                exception(0)
+                exception(0, self.symbol)
             self.scan()
             if self.symbol.content != "=":
-                exception(0)
+                exception(2, self.symbol)
             self.scan()
             self.operand()
 
     def operand(self):
         if not self.atom():
-            exception(0)
+            exception(3, self.symbol)
         self.scan()
         brackets = 0
         while self.symbol.content not in ["\\n", ","]:
@@ -126,6 +130,8 @@ class Syntax:
                 return
             elif self.atom():
                 self.scan()
+        if brackets:
+            exception(1, self.code[self.index - 1])
         self.scan()
 
     def atom(self):
@@ -134,51 +140,51 @@ class Syntax:
     def conditional_operator(self):
         self.scan()
         if self.symbol.content != "(":
-            exception(0)
+            exception(0, self.symbol)
         self.scan()
         self.expression()
         if self.symbol.content != ")":
-            exception(0)
+            exception(0, self.symbol)
         self.scan()
         self.operation()
 
     def expression(self):
         self.operand()
         if not (self.symbol.identifier == "o" and 6 <= self.symbol.number <= 11):
-            exception(0)
+            exception(0, self.symbol)
         self.scan()
         self.operand()
 
     def cycle(self):
         self.scan()
         if self.symbol.content != "WHILE":
-            exception(0)
+            exception(0, self.symbol)
         self.scan()
         if self.symbol.content != "(":
-            exception(0)
+            exception(0, self.symbol)
         self.scan()
         self.expression()
         if self.symbol.content != ")":
-            exception(0)
+            exception(0, self.symbol)
         self.scan()
         self.scan()
         self.text()
         if self.symbol.content != "END":
-            exception(0)
+            exception(0, self.symbol)
         self.scan()
         self.scan()
 
     def procedure(self):
         self.scan()
         if self.symbol.identifier != "i":
-            exception(0)
+            exception(0, self.symbol)
         self.scan()
         if self.symbol.content != "\\n":
-            exception(0)
+            exception(0, self.symbol)
         self.scan()
         self.text()
         if self.symbol.content != "END":
-            exception(0)
+            exception(0, self.symbol)
 
 
 def main():
@@ -186,9 +192,7 @@ def main():
     eol = lexemes.get_lexeme("\\n")
     code = [item for line in code for item in line + [eol]]
     syntax = Syntax(code)
-    print(list(map(str, code)))
     print(syntax.analysis())
-
 
 
 if __name__ == '__main__':

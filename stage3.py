@@ -74,7 +74,12 @@ class Translator:
                             self.stack.append(f"{a} {relationships[token.content]} {b}")
                         elif token.identifier == "o":
                             b, a = self.get_identity(self.stack.pop()), self.get_identity(self.stack.pop())
-                            self.stack.append(f"{a} {token.content} {b}")
+                            if (token.content == "=" 
+                                    or a.count(" ") and not a.count("(")
+                                    or b.count(" ") and not b.count("(")):
+                                self.stack.append(f"{a} {token.content} {b}")
+                            else:
+                                self.stack.append(f"({a} {token.content} {b})")
                         elif token.content in ["INTEGER", "REAL", "CHARACTER", "DIMENSION"]:
                             self.stack.append(token)
                         elif token.content == "WHILE":

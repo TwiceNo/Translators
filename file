@@ -1,7 +1,1 @@
-PROGRAM TEST
-    DO WHILE (A .NE. B)
-        A = A + B
-        B = B - 1
-        GOTO
-    END
-END
+A = 5 + ((8 - 4) + 2) / 10 * 2

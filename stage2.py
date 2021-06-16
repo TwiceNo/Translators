@@ -167,7 +167,7 @@ def main():
     for line in code:
         formatted_code += line + [end_of_line]
     translator = Notation(formatted_code, lexemes)
-    # print(" ".join(list(map(str, translator.polish_notation()))))
+    #print(" ".join(list(map(str, translator.polish_notation()))))
     return translator.polish_notation(), lexemes
     # for i in range(9):
     #     items = lexemes.items(priority=str(i))
