@@ -2,12 +2,12 @@ from stage2 import main as stage_2
 from lexeme import Lexeme
 
 
-relationships = {".GT." : ">",
-                 ".LT." : "<",
-                 ".GE." : ">=",
-                 ".LE." : "<=",
-                 ".NE." : "!=",
-                 ".EQ." : "=="}
+relationships = {".GT.": ">",
+                 ".LT.": "<",
+                 ".GE.": ">=",
+                 ".LE.": "<=",
+                 ".NE.": "!=",
+                 ".EQ.": "=="}
 
 conform = {"WHILE": "while",
            "RETURN": "return",
@@ -33,7 +33,6 @@ class Translator:
             return f"${a.content}"
 
     def translate(self):
-
         for token in self.code:
             if type(token) == str:
                 if token.endswith("НП"):
@@ -53,6 +52,9 @@ class Translator:
                     b = self.stack.pop()
                     self.stack.append(f"if ({b})")
                     self.stack.append("{")
+                elif token == "БП":
+                    label = self.stack.pop()
+                    self.stack.append(f"goto {label}")
                 elif token.startswith("M") and token.endswith(":"):
                     self.stack.append("}")
                 elif token.endswith("Ф"):
@@ -61,7 +63,7 @@ class Translator:
                     self.stack.append(f"&{func}({', '.join(params[::-1])})")
                 elif token == "АЭМ":
                     index = self.get_identity(self.stack.pop())
-                    self.stack.append(f"{self.get_identity(self.stack.pop())}[{index}]")
+                    self.stack.append(f"@{self.stack.pop()}[{index}]")
             else:
                 if type(token) != Lexeme or not token.priority:
                     self.stack.append(token)
@@ -75,17 +77,26 @@ class Translator:
                             self.stack.append(f"{a} {token.content} {b}")
                         elif token.content in ["INTEGER", "REAL", "CHARACTER", "DIMENSION"]:
                             self.stack.append(token)
+                        elif token.content == "WHILE":
+                            self.stack.append("while")
+                        elif token.content == "END":
+                            self.stack.append("}")
+                        elif token.content == "GOTO":
+                            self.stack.append(f"goto {self.stack.pop()}")
 
         level = 0
         perl_code = ""
         for i in range(len(self.stack)):
+            if self.stack[i] == "while":
+                perl_code += ('\t' * level) + f"{self.stack[i]} ({self.stack[i + 1]})\n"
+                self.stack[i + 1] = "{"
+                continue
             if self.stack[i] == "}":
                 level -= 1
             if (self.stack[i] not in ["}", "{"] and
                     not self.stack[i].startswith("if") and
                     not self.stack[i].startswith("sub")):
                 self.stack[i] += ";"
-            # offset = "\t"
             perl_code += ("\t" * level) + self.stack[i] + "\n"
             if self.stack[i] == "{":
                 level += 1

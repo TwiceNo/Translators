@@ -1,3 +1,7 @@
-DO WHILE (VARIABLE_1 .LT. VARIABLE_2)
-        VARIABLE_1 = VARIABLE_1 + 1
+PROGRAM TEST
+    DO WHILE (A .NE. B)
+        A = A + B
+        B = B - 1
+        GOTO
+    END
 END

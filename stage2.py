@@ -27,6 +27,7 @@ class Notation:
         is_logical_exp = False
         is_function = False
         is_variable = False
+        is_cycle = False
 
         for token in self.source:
             if not token.priority:
@@ -45,9 +46,13 @@ class Notation:
                         is_variable = True
                         operation_counter.append(0)
                     elif token.content == "END":
-                        self.stack.pop()
-                        self.stack.append("КП")
-                        procedure_level -= 1
+                        if self.stack:
+                            self.stack.pop()
+                        if not is_cycle:
+                            self.stack.append("КП")
+                            procedure_level -= 1
+                        else:
+                            self.output.append(token)
                     elif token.content == "PROGRAM":
                         self.stack.pop()
                         procedure_level += 1
@@ -87,6 +92,13 @@ class Notation:
                     elif token.content == "IF":
                         self.stack.append(token)
                         is_logical_exp = True
+                    elif token.content == "GOTO":
+                        self.output.append("БП")
+                    elif token.content == "DO":
+                        is_cycle = True
+                        self.output.append(token)
+                    elif token.content == "WHILE":
+                        self.output.append(token)
                     elif token.content == "\\n":
                         if is_logical_exp:
                             self.stack_manipulate("IF")
@@ -117,8 +129,11 @@ class Notation:
                     elif token.content == "END":
                         self.stack_manipulate("\\n")
                         self.stack.pop()
-                        self.stack.append("КП")
-                        procedure_level -= 1
+                        if not is_cycle:
+                            self.stack.append("КП")
+                            procedure_level -= 1
+                        else:
+                            self.output.append(token)
                     elif token.content == "PROGRAM":
                         procedure_level += 1
                         procedure_number += 1
@@ -131,7 +146,9 @@ class Notation:
                             self.output.append(stack_token)
                         self.stack.append(token)
         while self.stack:
-            self.output.append(self.stack.pop())
+            stack_item = self.stack.pop()
+            if stack_item.content != "\\n":
+                self.output.append(stack_item)
         return self.output
 
 
